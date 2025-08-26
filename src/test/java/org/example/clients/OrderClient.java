@@ -1,11 +1,12 @@
-package org.example;
+package org.example.clients;
 
 import io.restassured.response.ValidatableResponse;
+import org.example.Endpoints;
+import org.example.models.Order;
 
 import static io.restassured.RestAssured.given;
 
 public class OrderClient {
-    private static final String BASE_URL = "https://qa-scooter.praktikum-services.ru";
 
     public ValidatableResponse create(Order order) {
         return given()
@@ -16,7 +17,7 @@ public class OrderClient {
                 .header("Content-type", "application/json")
                 .body(order)
                 .when()
-                .post(BASE_URL + "/api/v1/orders")
+                .post(Endpoints.BASE_URL + Endpoints.ORDER_CREATE)
                 .then();
     }
 
@@ -26,7 +27,19 @@ public class OrderClient {
                         .httpClient(io.restassured.config.HttpClientConfig.httpClientConfig()
                                 .setParam("http.connection.timeout", 10000)
                                 .setParam("http.socket.timeout", 10000)))
-                .get(BASE_URL + "/api/v1/orders")
+                .get(Endpoints.BASE_URL + Endpoints.ORDER_GET_LIST)
+                .then();
+    }
+
+    public ValidatableResponse cancel(int trackId) {
+        return given()
+                .config(io.restassured.config.RestAssuredConfig.config()
+                        .httpClient(io.restassured.config.HttpClientConfig.httpClientConfig()
+                                .setParam("http.connection.timeout", 10000)
+                                .setParam("http.socket.timeout", 10000)))
+                .header("Content-type", "application/json")
+                .when()
+                .put(Endpoints.BASE_URL + Endpoints.ORDER_CANCEL + "?track=" + trackId)
                 .then();
     }
 }

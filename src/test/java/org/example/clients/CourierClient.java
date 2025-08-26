@@ -1,11 +1,12 @@
-package org.example;
+package org.example.clients;
 
 import io.restassured.response.ValidatableResponse;
+import org.example.Endpoints;
+import org.example.models.CourierCredentials;
 
 import static io.restassured.RestAssured.given;
 
 public class CourierClient {
-    private static final String BASE_URL = "https://qa-scooter.praktikum-services.ru";
 
     public ValidatableResponse create(CourierCredentials credentials) {
         return given()
@@ -16,7 +17,7 @@ public class CourierClient {
                 .header("Content-type", "application/json")
                 .body(credentials)
                 .when()
-                .post(BASE_URL + "/api/v1/courier")
+                .post(Endpoints.BASE_URL + Endpoints.COURIER_CREATE)
                 .then();
     }
 
@@ -29,7 +30,7 @@ public class CourierClient {
                 .header("Content-type", "application/json")
                 .body(credentials)
                 .when()
-                .post(BASE_URL + "/api/v1/courier/login")
+                .post(Endpoints.BASE_URL + Endpoints.COURIER_LOGIN)
                 .then();
     }
 
@@ -41,7 +42,7 @@ public class CourierClient {
                                 .setParam("http.socket.timeout", 10000)))
                 .header("Content-type", "application/json")
                 .when()
-                .delete(BASE_URL + "/api/v1/courier/" + id)
+                .delete(Endpoints.BASE_URL + Endpoints.COURIER_DELETE + id)
                 .then();
     }
 }

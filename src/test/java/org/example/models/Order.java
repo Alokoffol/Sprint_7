@@ -1,4 +1,4 @@
-package org.example;
+package org.example.models;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -40,7 +40,7 @@ public class Order {
                 "+7 800 355 35 35", 5, "2020-06-06", "Saske, come back", color);
     }
 
-    // Геттеры (опционально, если нужны для тестов)
+    // Геттеры
     public String getFirstName() {
         return firstName;
     }

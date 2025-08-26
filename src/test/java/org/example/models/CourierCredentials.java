@@ -1,4 +1,4 @@
-package org.example;
+package org.example.models;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -29,6 +29,19 @@ public class CourierCredentials {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    // Сеттеры (если нужны)
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     // Фабричный метод для логина (без firstName)

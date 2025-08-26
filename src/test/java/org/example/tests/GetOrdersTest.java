@@ -1,6 +1,8 @@
-package org.example;
+package org.example.tests;
 
 import io.qameta.allure.junit4.DisplayName;
+import org.example.steps.OrderSteps;
+import io.qameta.allure.Description;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -11,7 +13,7 @@ public class GetOrdersTest {
 
     @Test
     @DisplayName("Успешный запрос — возвращается список заказов")
-    public void getOrdersSuccess() {
+    public void getOrdersSuccessTest() {
         steps.getOrders()
                 .assertThat()
                 .statusCode(200)
