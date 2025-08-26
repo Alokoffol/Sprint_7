@@ -1,4 +1,3 @@
-target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -35,8 +34,12 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Store.allure/
-.idea/
-*.iml
+.DS_Store
+
+# Исключаем всю папку target кроме allure-results
 target/
+!target/allure-results/
+!target/allure-results/**
+
+# Allure
 .allure/
