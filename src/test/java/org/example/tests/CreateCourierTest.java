@@ -16,7 +16,7 @@ public class CreateCourierTest {
     private CourierSteps steps;
     private CourierCredentials credentials;
     private int courierId = -1;
-    private CourierCredentials credentialsForDeletion; // ← ДОБАВИЛИ ПЕРЕМЕННУЮ
+    private CourierCredentials credentialsForDeletion;
 
     @Before
     public void setUp() {
@@ -28,7 +28,68 @@ public class CreateCourierTest {
         );
     }
 
-    // ... другие тесты ...
+    @Test
+    @DisplayName("Успешное создание курьера")
+    public void createCourierSuccessTest() {
+        steps.create(credentials)
+                .assertThat()
+                .statusCode(201)
+                .and()
+                .body("ok", equalTo(true));
+
+        // Сохраняем для удаления в @After
+        credentialsForDeletion = credentials;
+    }
+
+    @Test
+    @DisplayName("Нельзя создать двух одинаковых курьеров")
+    public void createDuplicateCourierFailsTest() {
+        // Сначала создаем курьера
+        steps.create(credentials)
+                .assertThat()
+                .statusCode(201);
+
+        // Пытаемся создать такого же курьера
+        steps.create(credentials)
+                .assertThat()
+                .statusCode(409)
+                .and()
+                .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
+
+        credentialsForDeletion = credentials;
+    }
+
+    @Test
+    @DisplayName("Создание курьера без логина")
+    public void createWithoutLoginTest() {
+        CourierCredentials noLogin = new CourierCredentials(
+                null,
+                "password123",
+                "Test Courier"
+        );
+
+        steps.create(noLogin)
+                .assertThat()
+                .statusCode(400)
+                .and()
+                .body("message", equalTo("Недостаточно данных для создания учетной записи"));
+    }
+
+    @Test
+    @DisplayName("Создание курьера без пароля")
+    public void createWithoutPasswordTest() {
+        CourierCredentials noPassword = new CourierCredentials(
+                "courier_no_pass_" + System.currentTimeMillis(),
+                null,
+                "Test Courier"
+        );
+
+        steps.create(noPassword)
+                .assertThat()
+                .statusCode(400)
+                .and()
+                .body("message", equalTo("Недостаточно данных для создания учетной записи"));
+    }
 
     @Test
     @DisplayName("Создание курьера без имени")
@@ -47,7 +108,6 @@ public class CreateCourierTest {
                 .and()
                 .body("ok", equalTo(true));
 
-        // ТОЛЬКО ЗАПОМИНАЕМ ДАННЫЕ, удаление будет в @After
         credentialsForDeletion = noFirstName;
     }
 
@@ -58,7 +118,6 @@ public class CreateCourierTest {
                 steps.delete(courierId);
             }
 
-            // ↓↓↓ ВЫНЕСЛИ УДАЛЕНИЕ В @After ↓↓↓
             if (credentialsForDeletion != null) {
                 try {
                     ValidatableResponse loginResponse = steps.login(
@@ -70,10 +129,9 @@ public class CreateCourierTest {
                         steps.delete(id);
                     }
                 } catch (Exception e) {
-                    System.out.println("Курьер без имени не может быть удален: " + e.getMessage());
+                    System.out.println("Курьер не может быть удален: " + e.getMessage());
                 }
             }
-            // ↑↑↑ ВЫНЕСЛИ УДАЛЕНИЕ В @After ↑↑↑
 
             if (credentials != null && credentials.getLogin() != null) {
                 try {
